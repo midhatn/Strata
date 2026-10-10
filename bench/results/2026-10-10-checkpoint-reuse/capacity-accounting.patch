@@ -1,0 +1,163 @@
+diff --git a/include/strata/core/conversation_cache.hpp b/include/strata/core/conversation_cache.hpp
+index 6c5735ce..53b4f2f1 100644
+--- a/include/strata/core/conversation_cache.hpp
++++ b/include/strata/core/conversation_cache.hpp
+@@ -9,6 +9,7 @@
+ #include <cstddef>
+ #include <cstdint>
+ #include <deque>
++#include <limits>
+ #include <utility>
+ #include <vector>
+ 
+@@ -42,6 +43,38 @@ struct ConversationCheckpoint {
+     }
+ };
+ 
++// A fresh snapshot estimate counts the checkpoint chain as copied sizes. Moving
++// the chain retains its actual allocation capacities instead. Charge that whole
++// capacity to the cache, but subtract only owned storage from physical admission.
++// On failure neither output changes; whole-session capture rejects stage parts.
++inline bool conversation_checkpoint_move_budget(const std::vector<ConversationCheckpoint>& checks,
++                                                size_t& estimate, size_t& already_owned) {
++    size_t logical = 0, allocated = 0;
++    const size_t limit = std::numeric_limits<size_t>::max();
++    auto vector_bytes = [&](size_t size, size_t capacity, size_t width) {
++        if (capacity < size || size > limit / width || capacity > limit / width) return false;
++        const size_t payload = size * width, storage = capacity * width;
++        if (payload > limit - logical || storage > limit - allocated) return false;
++        logical += payload;
++        allocated += storage;
++        return true;
++    };
++    if (!vector_bytes(checks.size(), checks.capacity(), sizeof(ConversationCheckpoint))) return false;
++    for (const auto& c : checks) {
++        if (!c.stage_parts.empty() ||
++            !vector_bytes(c.ids.size(), c.ids.capacity(), sizeof(int32_t)) ||
++            !vector_bytes(c.imgs.size(), c.imgs.capacity(), sizeof(ConversationImageKey)) ||
++            !vector_bytes(c.stage_parts.size(), c.stage_parts.capacity(), sizeof(ConversationCheckpoint)))
++            return false;
++        for (const auto* bytes : {&c.gdn, &c.ple, &c.tails, &c.dead, &c.block_pos})
++            if (!vector_bytes(bytes->size(), bytes->capacity(), 1)) return false;
++    }
++    if (logical > estimate || allocated > limit - (estimate - logical)) return false;
++    estimate = estimate - logical + allocated;
++    already_owned = allocated;
++    return true;
++}
++
+ // Identity-layout K/V pages and completed indexer rows. For streamed layers the
+ // source is the authoritative host pool, NOT the replaceable VRAM slots.
+ struct ConversationKv {
+diff --git a/src/core/conversation_cache_test.cpp b/src/core/conversation_cache_test.cpp
+index 0d7ba16f..2b55baf9 100644
+--- a/src/core/conversation_cache_test.cpp
++++ b/src/core/conversation_cache_test.cpp
+@@ -22,6 +22,51 @@ SavedConversation image(std::initializer_list<int32_t> ids, bool cvec = true) {
+ }
+ 
+ int main() {
++    {
++        std::vector<ConversationCheckpoint> chain(1);
++        chain.reserve(8);
++        auto& c = chain[0];
++        c.ids = {1, 2}; c.ids.reserve(31);
++        c.imgs.reserve(7);
++        c.gdn.resize(9, 42); c.gdn.reserve(257);
++        c.ple.resize(3, 8); c.ple.reserve(63);
++        c.stage_parts.reserve(2); // empty, but its directory still belongs to the moved image
++        const size_t copied = sizeof(ConversationCheckpoint) + 2 * sizeof(int32_t) + 9 + 3;
++        const size_t owned = chain.capacity() * sizeof(ConversationCheckpoint) + c.bytes();
++        const size_t fresh_live_and_kv = 97;
++        size_t estimate = copied + fresh_live_and_kv, already_owned = 0;
++        const size_t old_physical_admission = estimate > owned ? estimate - owned : 0;
++        const auto* state = c.gdn.data();
++        check(conversation_checkpoint_move_budget(chain, estimate, already_owned),
++              "moving a checkpoint chain admits directory and payload spare capacity");
++        check(estimate == owned + fresh_live_and_kv && already_owned == owned,
++              "moved snapshot budget counts full capacity and physical gate credits only that ownership");
++        check(estimate - already_owned == fresh_live_and_kv,
++              "spare checkpoint capacity cannot reduce admission below new allocation bytes");
++        check(old_physical_admission < fresh_live_and_kv && estimate - already_owned == fresh_live_and_kv,
++              "regression fixture exposes original spare-capacity under-admission and the corrected fresh bytes");
++        check(chain[0].gdn.data() == state && chain[0].gdn[0] == 42,
++              "estimating a move never consumes or mutates the active chain");
++        size_t invalid = copied - 1, sentinel = 123;
++        check(!conversation_checkpoint_move_budget(chain, invalid, sentinel) &&
++              invalid == copied - 1 && sentinel == 123,
++              "an estimate smaller than its checkpoint contribution is rejected without output mutation");
++        invalid = SIZE_MAX;
++        check(!conversation_checkpoint_move_budget(chain, invalid, sentinel) && invalid == SIZE_MAX && sentinel == 123,
++              "adding moved spare capacity rejects size overflow before admission");
++        c.stage_parts.emplace_back();
++        invalid = copied + fresh_live_and_kv;
++        check(!conversation_checkpoint_move_budget(chain, invalid, sentinel) && sentinel == 123,
++              "single-session chain move rejects a layer-split checkpoint");
++    }
++    {
++        std::vector<ConversationCheckpoint> empty;
++        empty.reserve(4);
++        size_t estimate = 97, owned = 0;
++        check(conversation_checkpoint_move_budget(empty, estimate, owned) &&
++              owned == empty.capacity() * sizeof(ConversationCheckpoint) && estimate - owned == 97,
++              "an empty but reserved chain still charges its moved directory");
++    }
+     {
+         ConversationBuffer bytes;
+         const size_t first = ConversationBuffer::segment_bytes + 17;
+diff --git a/src/program/generate.cpp b/src/program/generate.cpp
+index 31850b01..8e5096e9 100644
+--- a/src/program/generate.cpp
++++ b/src/program/generate.cpp
+@@ -7924,6 +7924,11 @@ int main(int argc, char** argv) {
+             }
+             const size_t fresh_estimate = main_fresh_estimate + stage_fresh_estimate;
+             estimate += stage_estimate;
++            size_t existing_checks = 0;
++            if (move_checks && !strata::core::conversation_checkpoint_move_budget(checks, estimate, existing_checks)) {
++                std::fprintf(stderr, "strata serve: conversation cache: skip parking (checkpoint move estimate overflow or invalid chain)\n");
++                return true;
++            }
+             // A park carrying its own retained K/V replaces memory the cache
+             // already held, so capacity is make_room's call - it runs next either
+             // way, and put()'s accounting still bounds the budget. The with-reuse
+@@ -7944,11 +7949,6 @@ int main(int argc, char** argv) {
+             try {
+                 const uint64_t floor = (uint64_t) o.conversation_cache_min_free_mib * 1024 * 1024;
+                 const size_t retained = reuse.bytes() + stage_retained;
+-                size_t existing_checks = 0;
+-                if (move_checks) {
+-                    existing_checks = checks.capacity() * sizeof(ConvCheckpoint);
+-                    for (const auto& ck : checks) existing_checks += ck.bytes();
+-                }
+                 const size_t additional = estimate > retained ? estimate - retained : 0;
+                 const size_t new_bytes = additional > existing_checks ? additional - existing_checks : 0;
+                 // The physical-RAM gate: the incoming snapshot has to fit beside the floor.  make_room()
+diff --git a/sycl/src/program/generate.cpp b/sycl/src/program/generate.cpp
+index 3d27a82e..0c38170b 100644
+--- a/sycl/src/program/generate.cpp
++++ b/sycl/src/program/generate.cpp
+@@ -7504,6 +7504,11 @@ int main(int argc, char **argv) try {
+             }
+             const size_t fresh_estimate = main_fresh_estimate + stage_fresh_estimate;
+             estimate += stage_estimate;
++            size_t existing_checks = 0;
++            if (move_checks && !strata::core::conversation_checkpoint_move_budget(checks, estimate, existing_checks)) {
++                std::fprintf(stderr, "strata serve: conversation cache: skip parking (checkpoint move estimate overflow or invalid chain)\n");
++                return true;
++            }
+             // A park carrying its own retained K/V replaces memory the cache
+             // already held, so capacity is make_room's call - it runs next either
+             // way, and put()'s accounting still bounds the budget. The with-reuse
+@@ -7524,11 +7529,6 @@ int main(int argc, char **argv) try {
+             try {
+                 const uint64_t floor = (uint64_t) o.conversation_cache_min_free_mib * 1024 * 1024;
+                 const size_t retained = reuse.bytes() + stage_retained;
+-                size_t existing_checks = 0;
+-                if (move_checks) {
+-                    existing_checks = checks.capacity() * sizeof(ConvCheckpoint);
+-                    for (const auto& ck : checks) existing_checks += ck.bytes();
+-                }
+                 const size_t additional = estimate > retained ? estimate - retained : 0;
+                 const size_t new_bytes = additional > existing_checks ? additional - existing_checks : 0;
+                 if (!strata::core::conversation_memory_admit(strata::core::available_host_bytes(),

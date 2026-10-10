@@ -1,0 +1,2053 @@
+{
+  "source_commit": "66c247147ae8e7e636eac72f496ce94a9e47a811",
+  "base_commit": "1dd738fbd241dd1249ca462533fca162bd65be78",
+  "upstream_pr": "https://github.com/Niko1221/Strata/pull/1511",
+  "original_author": "InB4DevOps",
+  "upstream_commits": [
+    "3c662499b11e56c619d2e68834adb95dbeeadbc8",
+    "bd6d3bf62c116b105bf7fd44d2e172f3ffb4b212"
+  ],
+  "engine_sha256": "4642b06a6556045c382ea581c00d2cd6894b14775b1ff0b9681c02226e731855",
+  "hardware": {
+    "gpu": "NVIDIA RTX 4070 Laptop 8 GB",
+    "cpu": "AMD Ryzen 9 7940HS",
+    "os": "Windows",
+    "ram": "64 GB DDR5-5600"
+  },
+  "validation": {
+    "iq3_s_reference_parity": "passed",
+    "cpu_cache_checks_passed": 4226,
+    "hip_sycl": "source-reviewed only; not compiled",
+    "python_tool_tests_passed": 19,
+    "cuda_selected_tests_passed": 14
+  },
+  "limits": [
+    "Same feature-disabled port control, not an unchanged public release",
+    "Short139–390token HTTP requests; configured64K, no64K input timing",
+    "Fixed seed42 but different generated lengths; no bit-exact generation claim",
+    "Firstvision host overhead varies; small read-only inspection overlap; no overall speedup or peak-RAM reduction claim",
+    "Per-event admission estimates are not measured allocator traffic or concurrent RAM savings",
+    "Prior projection-enabled/interrupted fixtures excluded"
+  ],
+  "comparison": {
+    "scope": "Short fixed-history HTTP fixture, not Hermes autonomy or 64K prompt performance.",
+    "accounting_note": "retained/additional sums are cumulative trace accounting, not measured concurrent RAM savings. Park save time includes capture time; do not add them.",
+    "terminal_cases": 6,
+    "same_request_hashes": true,
+    "same_source_hashes": true,
+    "same_external_hashes": true,
+    "same_prompt_reuse_decisions": true,
+    "cases": [
+      {
+        "case": "control-01",
+        "status": "passed",
+        "request_count": 13,
+        "passed_requests": 13,
+        "env": {
+          "STRATA_PROMPT_CACHE_TRACE": "1",
+          "STRATA_RUNNING_STATE_REUSE": "0",
+          "STRATA_CHECKPOINT_MOVE": "0"
+        },
+        "settings": {
+          "max_context": 65536,
+          "reasoning": "high",
+          "cache_total_mib": 2048,
+          "cache_slots": 2
+        },
+        "projection_config_false": true,
+        "no_native_control_vector_argument": true,
+        "case_seconds": 116.07799999997951,
+        "http_seconds": 69.6830000000773,
+        "http_seconds_excluding_first_vision": 55.79300000006333,
+        "output_tokens": 691,
+        "native_prompt_ms": 23082.100000000002,
+        "native_decode_ms": 38174.9,
+        "phase_counts": {
+          "park": 12,
+          "checkpoint": 9,
+          "restore": 8,
+          "decision": 13
+        },
+        "park_stored": 12,
+        "park_capture_ms": 837.0999999999999,
+        "park_save_ms": 837.3,
+        "checkpoint_save_ms": 264.8,
+        "restore_ms": 323.40000000000003,
+        "park_retained_bytes_sum": 100415424,
+        "park_additional_bytes_sum": 4526519188,
+        "park_fresh_estimate_bytes_sum": 4545442260,
+        "park_max_retained_bytes": 15377656,
+        "park_min_additional_bytes": 239185016,
+        "park_max_additional_bytes": 472257684,
+        "min_available_ram_gib": 10.645435333251953,
+        "min_native_free_vram_mib": 324,
+        "process_memory_peaks": {
+          "native": {
+            "rss_bytes": 41670090752,
+            "private_bytes": 49281851392,
+            "peak_wset_bytes": 41670090752
+          },
+          "vision": {
+            "rss_bytes": 1175871488,
+            "private_bytes": 1428774912,
+            "peak_wset_bytes": 1214484480
+          }
+        },
+        "same_process_identities": true,
+        "clean_owned_process_cleanup": true,
+        "per_request": [
+          {
+            "name": "vision",
+            "passed": true,
+            "seconds": 13.89000000001397,
+            "prompt_tokens": 139,
+            "output_tokens": 60,
+            "reused_tokens": 0,
+            "prompt_ms": 2750.3,
+            "decode_ms": 3440.3,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-A0",
+            "passed": true,
+            "seconds": 5.5,
+            "prompt_tokens": 231,
+            "output_tokens": 66,
+            "reused_tokens": 0,
+            "prompt_ms": 2061.4,
+            "decode_ms": 3358.7,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-B0",
+            "passed": true,
+            "seconds": 5.389999999984866,
+            "prompt_tokens": 234,
+            "output_tokens": 68,
+            "reused_tokens": 0,
+            "prompt_ms": 2047.7,
+            "decode_ms": 3284.9,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-A1",
+            "passed": true,
+            "seconds": 3.76500000001397,
+            "prompt_tokens": 259,
+            "output_tokens": 44,
+            "reused_tokens": 226,
+            "prompt_ms": 1415.3,
+            "decode_ms": 2293.6,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-B1",
+            "passed": true,
+            "seconds": 4.797000000020489,
+            "prompt_tokens": 262,
+            "output_tokens": 57,
+            "reused_tokens": 229,
+            "prompt_ms": 1577.4,
+            "decode_ms": 3135.7,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-A2",
+            "passed": true,
+            "seconds": 4.578000000008615,
+            "prompt_tokens": 286,
+            "output_tokens": 51,
+            "reused_tokens": 254,
+            "prompt_ms": 1887.2,
+            "decode_ms": 2638.2,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-B2",
+            "passed": true,
+            "seconds": 4.89000000001397,
+            "prompt_tokens": 290,
+            "output_tokens": 53,
+            "reused_tokens": 257,
+            "prompt_ms": 2179.8,
+            "decode_ms": 2665.3,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-A2",
+            "passed": true,
+            "seconds": 2.922000000020489,
+            "prompt_tokens": 286,
+            "output_tokens": 47,
+            "reused_tokens": 281,
+            "prompt_ms": 425.5,
+            "decode_ms": 2424.7,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-B2",
+            "passed": true,
+            "seconds": 2.375,
+            "prompt_tokens": 290,
+            "output_tokens": 38,
+            "reused_tokens": 285,
+            "prompt_ms": 366.4,
+            "decode_ms": 1961.0,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-A2-again",
+            "passed": true,
+            "seconds": 2.937000000005355,
+            "prompt_tokens": 286,
+            "output_tokens": 47,
+            "reused_tokens": 281,
+            "prompt_ms": 392.7,
+            "decode_ms": 2466.4,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-B2-again",
+            "passed": true,
+            "seconds": 2.5929999999934807,
+            "prompt_tokens": 290,
+            "output_tokens": 42,
+            "reused_tokens": 285,
+            "prompt_ms": 407.7,
+            "decode_ms": 2129.1,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "tool-call",
+            "passed": true,
+            "seconds": 11.23399999999674,
+            "prompt_tokens": 334,
+            "output_tokens": 97,
+            "reused_tokens": 0,
+            "prompt_ms": 4381.0,
+            "decode_ms": 6806.5,
+            "finish_reason": "tool_calls"
+          },
+          {
+            "name": "tool-result",
+            "passed": true,
+            "seconds": 4.812000000005355,
+            "prompt_tokens": 390,
+            "output_tokens": 21,
+            "reused_tokens": 329,
+            "prompt_ms": 3189.7,
+            "decode_ms": 1570.5,
+            "finish_reason": "stop"
+          }
+        ],
+        "decisions": [
+          {
+            "req": 1,
+            "prompt": 139,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 1,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 2,
+            "prompt": 231,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 3,
+            "prompt": 234,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 4,
+            "prompt": 259,
+            "source": "parked/checkpoint",
+            "resume": 226,
+            "read_from": 226,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 5,
+            "prompt": 262,
+            "source": "parked/checkpoint",
+            "resume": 229,
+            "read_from": 229,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 6,
+            "prompt": 286,
+            "source": "parked/checkpoint",
+            "resume": 254,
+            "read_from": 254,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 7,
+            "prompt": 290,
+            "source": "parked/checkpoint",
+            "resume": 257,
+            "read_from": 257,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 8,
+            "prompt": 286,
+            "source": "parked/checkpoint",
+            "resume": 281,
+            "read_from": 281,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 9,
+            "prompt": 290,
+            "source": "parked/checkpoint",
+            "resume": 285,
+            "read_from": 285,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 10,
+            "prompt": 286,
+            "source": "parked/checkpoint",
+            "resume": 281,
+            "read_from": 281,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 11,
+            "prompt": 290,
+            "source": "parked/checkpoint",
+            "resume": 285,
+            "read_from": 285,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 12,
+            "prompt": 334,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 13,
+            "prompt": 390,
+            "source": "checkpoint",
+            "resume": 329,
+            "read_from": 329,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          }
+        ]
+      },
+      {
+        "case": "reuse-01",
+        "status": "passed",
+        "request_count": 13,
+        "passed_requests": 13,
+        "env": {
+          "STRATA_PROMPT_CACHE_TRACE": "1",
+          "STRATA_RUNNING_STATE_REUSE": "1",
+          "STRATA_CHECKPOINT_MOVE": "0"
+        },
+        "settings": {
+          "max_context": 65536,
+          "reasoning": "high",
+          "cache_total_mib": 2048,
+          "cache_slots": 2
+        },
+        "projection_config_false": true,
+        "no_native_control_vector_argument": true,
+        "case_seconds": 107.48500000001513,
+        "http_seconds": 61.17199999996228,
+        "http_seconds_excluding_first_vision": 54.20299999995041,
+        "output_tokens": 689,
+        "native_prompt_ms": 22590.6,
+        "native_decode_ms": 37109.700000000004,
+        "phase_counts": {
+          "park": 12,
+          "checkpoint": 9,
+          "restore": 8,
+          "decision": 13
+        },
+        "park_stored": 12,
+        "park_capture_ms": 668.6,
+        "park_save_ms": 668.6999999999999,
+        "checkpoint_save_ms": 262.2,
+        "restore_ms": 241.4,
+        "park_retained_bytes_sum": 1044258624,
+        "park_additional_bytes_sum": 3581815692,
+        "park_fresh_estimate_bytes_sum": 4545436108,
+        "park_max_retained_bytes": 133440808,
+        "park_min_additional_bytes": 239185016,
+        "park_max_additional_bytes": 354194488,
+        "min_available_ram_gib": 11.052894592285156,
+        "min_native_free_vram_mib": 340,
+        "process_memory_peaks": {
+          "native": {
+            "rss_bytes": 41329635328,
+            "private_bytes": 49044496384,
+            "peak_wset_bytes": 41674747904
+          },
+          "vision": {
+            "rss_bytes": 1175642112,
+            "private_bytes": 1429471232,
+            "peak_wset_bytes": 1215528960
+          }
+        },
+        "same_process_identities": true,
+        "clean_owned_process_cleanup": true,
+        "per_request": [
+          {
+            "name": "vision",
+            "passed": true,
+            "seconds": 6.969000000011874,
+            "prompt_tokens": 139,
+            "output_tokens": 60,
+            "reused_tokens": 0,
+            "prompt_ms": 2923.7,
+            "decode_ms": 3361.9,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-A0",
+            "passed": true,
+            "seconds": 4.969000000011874,
+            "prompt_tokens": 231,
+            "output_tokens": 60,
+            "reused_tokens": 0,
+            "prompt_ms": 2079.4,
+            "decode_ms": 2793.8,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-B0",
+            "passed": true,
+            "seconds": 5.515999999974156,
+            "prompt_tokens": 234,
+            "output_tokens": 68,
+            "reused_tokens": 0,
+            "prompt_ms": 2082.7,
+            "decode_ms": 3342.6,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-A1",
+            "passed": true,
+            "seconds": 4.2189999999827705,
+            "prompt_tokens": 259,
+            "output_tokens": 55,
+            "reused_tokens": 226,
+            "prompt_ms": 1348.8,
+            "decode_ms": 2814.8,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-B1",
+            "passed": true,
+            "seconds": 4.389999999984866,
+            "prompt_tokens": 262,
+            "output_tokens": 57,
+            "reused_tokens": 229,
+            "prompt_ms": 1363.4,
+            "decode_ms": 2970.2,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-A2",
+            "passed": true,
+            "seconds": 4.405999999988126,
+            "prompt_tokens": 286,
+            "output_tokens": 51,
+            "reused_tokens": 254,
+            "prompt_ms": 1836.0,
+            "decode_ms": 2535.2,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-B2",
+            "passed": true,
+            "seconds": 4.280999999988126,
+            "prompt_tokens": 290,
+            "output_tokens": 42,
+            "reused_tokens": 257,
+            "prompt_ms": 2008.1,
+            "decode_ms": 2196.6,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-A2",
+            "passed": true,
+            "seconds": 2.9060000000172295,
+            "prompt_tokens": 286,
+            "output_tokens": 47,
+            "reused_tokens": 281,
+            "prompt_ms": 376.2,
+            "decode_ms": 2458.7,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-B2",
+            "passed": true,
+            "seconds": 2.5940000000118744,
+            "prompt_tokens": 290,
+            "output_tokens": 42,
+            "reused_tokens": 285,
+            "prompt_ms": 397.3,
+            "decode_ms": 2129.9,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-A2-again",
+            "passed": true,
+            "seconds": 2.76500000001397,
+            "prompt_tokens": 286,
+            "output_tokens": 47,
+            "reused_tokens": 281,
+            "prompt_ms": 345.3,
+            "decode_ms": 2366.6,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-B2-again",
+            "passed": true,
+            "seconds": 2.577999999979511,
+            "prompt_tokens": 290,
+            "output_tokens": 42,
+            "reused_tokens": 285,
+            "prompt_ms": 363.2,
+            "decode_ms": 2151.4,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "tool-call",
+            "passed": true,
+            "seconds": 11.09399999998277,
+            "prompt_tokens": 334,
+            "output_tokens": 97,
+            "reused_tokens": 0,
+            "prompt_ms": 4399.0,
+            "decode_ms": 6636.5,
+            "finish_reason": "tool_calls"
+          },
+          {
+            "name": "tool-result",
+            "passed": true,
+            "seconds": 4.485000000015134,
+            "prompt_tokens": 390,
+            "output_tokens": 21,
+            "reused_tokens": 329,
+            "prompt_ms": 3067.5,
+            "decode_ms": 1351.5,
+            "finish_reason": "stop"
+          }
+        ],
+        "decisions": [
+          {
+            "req": 1,
+            "prompt": 139,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 1,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 2,
+            "prompt": 231,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 3,
+            "prompt": 234,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 4,
+            "prompt": 259,
+            "source": "parked/checkpoint",
+            "resume": 226,
+            "read_from": 226,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 5,
+            "prompt": 262,
+            "source": "parked/checkpoint",
+            "resume": 229,
+            "read_from": 229,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 6,
+            "prompt": 286,
+            "source": "parked/checkpoint",
+            "resume": 254,
+            "read_from": 254,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 7,
+            "prompt": 290,
+            "source": "parked/checkpoint",
+            "resume": 257,
+            "read_from": 257,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 8,
+            "prompt": 286,
+            "source": "parked/checkpoint",
+            "resume": 281,
+            "read_from": 281,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 9,
+            "prompt": 290,
+            "source": "parked/checkpoint",
+            "resume": 285,
+            "read_from": 285,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 10,
+            "prompt": 286,
+            "source": "parked/checkpoint",
+            "resume": 281,
+            "read_from": 281,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 11,
+            "prompt": 290,
+            "source": "parked/checkpoint",
+            "resume": 285,
+            "read_from": 285,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 12,
+            "prompt": 334,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 13,
+            "prompt": 390,
+            "source": "checkpoint",
+            "resume": 329,
+            "read_from": 329,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          }
+        ]
+      },
+      {
+        "case": "move-01",
+        "status": "passed",
+        "request_count": 13,
+        "passed_requests": 13,
+        "env": {
+          "STRATA_PROMPT_CACHE_TRACE": "1",
+          "STRATA_RUNNING_STATE_REUSE": "0",
+          "STRATA_CHECKPOINT_MOVE": "1"
+        },
+        "settings": {
+          "max_context": 65536,
+          "reasoning": "high",
+          "cache_total_mib": 2048,
+          "cache_slots": 2
+        },
+        "projection_config_false": true,
+        "no_native_control_vector_argument": true,
+        "case_seconds": 114.65700000000652,
+        "http_seconds": 67.54599999997299,
+        "http_seconds_excluding_first_vision": 53.73299999997835,
+        "output_tokens": 692,
+        "native_prompt_ms": 22178.1,
+        "native_decode_ms": 36723.7,
+        "phase_counts": {
+          "park": 12,
+          "checkpoint": 9,
+          "restore": 8,
+          "decision": 13
+        },
+        "park_stored": 12,
+        "park_capture_ms": 331.70000000000005,
+        "park_save_ms": 332.00000000000006,
+        "checkpoint_save_ms": 306.3,
+        "restore_ms": 149.7,
+        "park_retained_bytes_sum": 100353984,
+        "park_additional_bytes_sum": 1574892084,
+        "park_fresh_estimate_bytes_sum": 4545197984,
+        "park_max_retained_bytes": 15377656,
+        "park_min_additional_bytes": 118064476,
+        "park_max_additional_bytes": 242727944,
+        "min_available_ram_gib": 10.883495330810547,
+        "min_native_free_vram_mib": 328,
+        "process_memory_peaks": {
+          "native": {
+            "rss_bytes": 41225355264,
+            "private_bytes": 48836108288,
+            "peak_wset_bytes": 41333977088
+          },
+          "vision": {
+            "rss_bytes": 1175756800,
+            "private_bytes": 1430290432,
+            "peak_wset_bytes": 1215262720
+          }
+        },
+        "same_process_identities": true,
+        "clean_owned_process_cleanup": true,
+        "per_request": [
+          {
+            "name": "vision",
+            "passed": true,
+            "seconds": 13.812999999994645,
+            "prompt_tokens": 139,
+            "output_tokens": 60,
+            "reused_tokens": 0,
+            "prompt_ms": 2666.3,
+            "decode_ms": 3158.9,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-A0",
+            "passed": true,
+            "seconds": 4.937000000005355,
+            "prompt_tokens": 231,
+            "output_tokens": 65,
+            "reused_tokens": 0,
+            "prompt_ms": 2055.7,
+            "decode_ms": 2802.6,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-B0",
+            "passed": true,
+            "seconds": 5.280999999988126,
+            "prompt_tokens": 234,
+            "output_tokens": 68,
+            "reused_tokens": 0,
+            "prompt_ms": 2043.5,
+            "decode_ms": 3176.6,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-A1",
+            "passed": true,
+            "seconds": 3.7190000000118744,
+            "prompt_tokens": 259,
+            "output_tokens": 44,
+            "reused_tokens": 226,
+            "prompt_ms": 1370.8,
+            "decode_ms": 2286.6,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-B1",
+            "passed": true,
+            "seconds": 4.046999999991385,
+            "prompt_tokens": 262,
+            "output_tokens": 51,
+            "reused_tokens": 229,
+            "prompt_ms": 1342.4,
+            "decode_ms": 2668.8,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-A2",
+            "passed": true,
+            "seconds": 4.405999999988126,
+            "prompt_tokens": 286,
+            "output_tokens": 47,
+            "reused_tokens": 254,
+            "prompt_ms": 1915.2,
+            "decode_ms": 2455.2,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-B2",
+            "passed": true,
+            "seconds": 4.23399999999674,
+            "prompt_tokens": 290,
+            "output_tokens": 42,
+            "reused_tokens": 257,
+            "prompt_ms": 2020.9,
+            "decode_ms": 2181.4,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-A2",
+            "passed": true,
+            "seconds": 3.0,
+            "prompt_tokens": 286,
+            "output_tokens": 47,
+            "reused_tokens": 281,
+            "prompt_ms": 336.4,
+            "decode_ms": 2609.1,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-B2",
+            "passed": true,
+            "seconds": 2.7039999999979045,
+            "prompt_tokens": 290,
+            "output_tokens": 42,
+            "reused_tokens": 285,
+            "prompt_ms": 339.8,
+            "decode_ms": 2286.5,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-A2-again",
+            "passed": true,
+            "seconds": 3.0469999999913853,
+            "prompt_tokens": 286,
+            "output_tokens": 51,
+            "reused_tokens": 281,
+            "prompt_ms": 333.5,
+            "decode_ms": 2642.7,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-B2-again",
+            "passed": true,
+            "seconds": 2.5,
+            "prompt_tokens": 290,
+            "output_tokens": 42,
+            "reused_tokens": 285,
+            "prompt_ms": 322.9,
+            "decode_ms": 2120.9,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "tool-call",
+            "passed": true,
+            "seconds": 10.89000000001397,
+            "prompt_tokens": 334,
+            "output_tokens": 98,
+            "reused_tokens": 0,
+            "prompt_ms": 4404.9,
+            "decode_ms": 6429.7,
+            "finish_reason": "tool_calls"
+          },
+          {
+            "name": "tool-result",
+            "passed": true,
+            "seconds": 4.967999999993481,
+            "prompt_tokens": 390,
+            "output_tokens": 35,
+            "reused_tokens": 329,
+            "prompt_ms": 3025.8,
+            "decode_ms": 1904.7,
+            "finish_reason": "stop"
+          }
+        ],
+        "decisions": [
+          {
+            "req": 1,
+            "prompt": 139,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 1,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 2,
+            "prompt": 231,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 3,
+            "prompt": 234,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 4,
+            "prompt": 259,
+            "source": "parked/checkpoint",
+            "resume": 226,
+            "read_from": 226,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 5,
+            "prompt": 262,
+            "source": "parked/checkpoint",
+            "resume": 229,
+            "read_from": 229,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 6,
+            "prompt": 286,
+            "source": "parked/checkpoint",
+            "resume": 254,
+            "read_from": 254,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 7,
+            "prompt": 290,
+            "source": "parked/checkpoint",
+            "resume": 257,
+            "read_from": 257,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 8,
+            "prompt": 286,
+            "source": "parked/checkpoint",
+            "resume": 281,
+            "read_from": 281,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 9,
+            "prompt": 290,
+            "source": "parked/checkpoint",
+            "resume": 285,
+            "read_from": 285,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 10,
+            "prompt": 286,
+            "source": "parked/checkpoint",
+            "resume": 281,
+            "read_from": 281,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 11,
+            "prompt": 290,
+            "source": "parked/checkpoint",
+            "resume": 285,
+            "read_from": 285,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 12,
+            "prompt": 334,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 13,
+            "prompt": 390,
+            "source": "checkpoint",
+            "resume": 329,
+            "read_from": 329,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          }
+        ]
+      },
+      {
+        "case": "combined-01",
+        "status": "passed",
+        "request_count": 13,
+        "passed_requests": 13,
+        "env": {
+          "STRATA_PROMPT_CACHE_TRACE": "1",
+          "STRATA_RUNNING_STATE_REUSE": "1",
+          "STRATA_CHECKPOINT_MOVE": "1"
+        },
+        "settings": {
+          "max_context": 65536,
+          "reasoning": "high",
+          "cache_total_mib": 2048,
+          "cache_slots": 2
+        },
+        "projection_config_false": true,
+        "no_native_control_vector_argument": true,
+        "case_seconds": 115.71899999998277,
+        "http_seconds": 69.0789999999979,
+        "http_seconds_excluding_first_vision": 55.281999999977415,
+        "output_tokens": 712,
+        "native_prompt_ms": 22197.8,
+        "native_decode_ms": 38295.100000000006,
+        "phase_counts": {
+          "park": 12,
+          "checkpoint": 9,
+          "restore": 8,
+          "decision": 13
+        },
+        "park_stored": 12,
+        "park_capture_ms": 261.4,
+        "park_save_ms": 261.5,
+        "checkpoint_save_ms": 216.79999999999998,
+        "restore_ms": 126.19999999999999,
+        "park_retained_bytes_sum": 1044859200,
+        "park_additional_bytes_sum": 630759484,
+        "park_fresh_estimate_bytes_sum": 4545802536,
+        "park_max_retained_bytes": 133440808,
+        "park_min_additional_bytes": 1300,
+        "park_max_additional_bytes": 243100524,
+        "min_available_ram_gib": 10.954395294189453,
+        "min_native_free_vram_mib": 340,
+        "process_memory_peaks": {
+          "native": {
+            "rss_bytes": 41315852288,
+            "private_bytes": 48952606720,
+            "peak_wset_bytes": 41333301248
+          },
+          "vision": {
+            "rss_bytes": 1175752704,
+            "private_bytes": 1430286336,
+            "peak_wset_bytes": 1215102976
+          }
+        },
+        "same_process_identities": true,
+        "clean_owned_process_cleanup": true,
+        "per_request": [
+          {
+            "name": "vision",
+            "passed": true,
+            "seconds": 13.797000000020489,
+            "prompt_tokens": 139,
+            "output_tokens": 60,
+            "reused_tokens": 0,
+            "prompt_ms": 2766.5,
+            "decode_ms": 3216.5,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-A0",
+            "passed": true,
+            "seconds": 5.01500000001397,
+            "prompt_tokens": 231,
+            "output_tokens": 65,
+            "reused_tokens": 0,
+            "prompt_ms": 2036.0,
+            "decode_ms": 2883.1,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-B0",
+            "passed": true,
+            "seconds": 5.39100000000326,
+            "prompt_tokens": 234,
+            "output_tokens": 68,
+            "reused_tokens": 0,
+            "prompt_ms": 2024.2,
+            "decode_ms": 3320.1,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-A1",
+            "passed": true,
+            "seconds": 4.26500000001397,
+            "prompt_tokens": 259,
+            "output_tokens": 57,
+            "reused_tokens": 226,
+            "prompt_ms": 1298.7,
+            "decode_ms": 2903.7,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-B1",
+            "passed": true,
+            "seconds": 4.437000000005355,
+            "prompt_tokens": 262,
+            "output_tokens": 57,
+            "reused_tokens": 229,
+            "prompt_ms": 1338.4,
+            "decode_ms": 3055.2,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-A2",
+            "passed": true,
+            "seconds": 4.39100000000326,
+            "prompt_tokens": 286,
+            "output_tokens": 47,
+            "reused_tokens": 254,
+            "prompt_ms": 1823.3,
+            "decode_ms": 2506.4,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-B2",
+            "passed": true,
+            "seconds": 4.2189999999827705,
+            "prompt_tokens": 290,
+            "output_tokens": 42,
+            "reused_tokens": 257,
+            "prompt_ms": 1994.7,
+            "decode_ms": 2155.6,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-A2",
+            "passed": true,
+            "seconds": 2.375,
+            "prompt_tokens": 286,
+            "output_tokens": 40,
+            "reused_tokens": 281,
+            "prompt_ms": 301.5,
+            "decode_ms": 2006.0,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-B2",
+            "passed": true,
+            "seconds": 2.9689999999827705,
+            "prompt_tokens": 290,
+            "output_tokens": 49,
+            "reused_tokens": 285,
+            "prompt_ms": 342.0,
+            "decode_ms": 2569.2,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-A2-again",
+            "passed": true,
+            "seconds": 2.625,
+            "prompt_tokens": 286,
+            "output_tokens": 43,
+            "reused_tokens": 281,
+            "prompt_ms": 324.9,
+            "decode_ms": 2219.0,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-B2-again",
+            "passed": true,
+            "seconds": 2.48499999998603,
+            "prompt_tokens": 290,
+            "output_tokens": 40,
+            "reused_tokens": 285,
+            "prompt_ms": 312.1,
+            "decode_ms": 2101.1,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "tool-call",
+            "passed": true,
+            "seconds": 12.48499999998603,
+            "prompt_tokens": 334,
+            "output_tokens": 123,
+            "reused_tokens": 0,
+            "prompt_ms": 4482.5,
+            "decode_ms": 7954.9,
+            "finish_reason": "tool_calls"
+          },
+          {
+            "name": "tool-result",
+            "passed": true,
+            "seconds": 4.625,
+            "prompt_tokens": 390,
+            "output_tokens": 21,
+            "reused_tokens": 329,
+            "prompt_ms": 3153.0,
+            "decode_ms": 1404.3,
+            "finish_reason": "stop"
+          }
+        ],
+        "decisions": [
+          {
+            "req": 1,
+            "prompt": 139,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 1,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 2,
+            "prompt": 231,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 3,
+            "prompt": 234,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 4,
+            "prompt": 259,
+            "source": "parked/checkpoint",
+            "resume": 226,
+            "read_from": 226,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 5,
+            "prompt": 262,
+            "source": "parked/checkpoint",
+            "resume": 229,
+            "read_from": 229,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 6,
+            "prompt": 286,
+            "source": "parked/checkpoint",
+            "resume": 254,
+            "read_from": 254,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 7,
+            "prompt": 290,
+            "source": "parked/checkpoint",
+            "resume": 257,
+            "read_from": 257,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 8,
+            "prompt": 286,
+            "source": "parked/checkpoint",
+            "resume": 281,
+            "read_from": 281,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 9,
+            "prompt": 290,
+            "source": "parked/checkpoint",
+            "resume": 285,
+            "read_from": 285,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 10,
+            "prompt": 286,
+            "source": "parked/checkpoint",
+            "resume": 281,
+            "read_from": 281,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 11,
+            "prompt": 290,
+            "source": "parked/checkpoint",
+            "resume": 285,
+            "read_from": 285,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 12,
+            "prompt": 334,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 13,
+            "prompt": 390,
+            "source": "checkpoint",
+            "resume": 329,
+            "read_from": 329,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          }
+        ]
+      },
+      {
+        "case": "combined-02",
+        "status": "passed",
+        "request_count": 13,
+        "passed_requests": 13,
+        "env": {
+          "STRATA_PROMPT_CACHE_TRACE": "1",
+          "STRATA_RUNNING_STATE_REUSE": "1",
+          "STRATA_CHECKPOINT_MOVE": "1"
+        },
+        "settings": {
+          "max_context": 65536,
+          "reasoning": "high",
+          "cache_total_mib": 2048,
+          "cache_slots": 2
+        },
+        "projection_config_false": true,
+        "no_native_control_vector_argument": true,
+        "case_seconds": 114.71899999998277,
+        "http_seconds": 68.24900000003981,
+        "http_seconds_excluding_first_vision": 54.749000000039814,
+        "output_tokens": 688,
+        "native_prompt_ms": 22257.6,
+        "native_decode_ms": 37244.1,
+        "phase_counts": {
+          "park": 12,
+          "checkpoint": 9,
+          "restore": 8,
+          "decision": 13
+        },
+        "park_stored": 12,
+        "park_capture_ms": 246.6,
+        "park_save_ms": 246.79999999999998,
+        "checkpoint_save_ms": 274.5,
+        "restore_ms": 144.6,
+        "park_retained_bytes_sum": 1034126144,
+        "park_additional_bytes_sum": 630148848,
+        "park_fresh_estimate_bytes_sum": 4545497180,
+        "park_max_retained_bytes": 133440808,
+        "park_min_additional_bytes": 1204,
+        "park_max_additional_bytes": 242789016,
+        "min_available_ram_gib": 10.068977355957031,
+        "min_native_free_vram_mib": 326,
+        "process_memory_peaks": {
+          "native": {
+            "rss_bytes": 41324818432,
+            "private_bytes": 48960258048,
+            "peak_wset_bytes": 41330442240
+          },
+          "vision": {
+            "rss_bytes": 1175289856,
+            "private_bytes": 1429630976,
+            "peak_wset_bytes": 1215188992
+          }
+        },
+        "same_process_identities": true,
+        "clean_owned_process_cleanup": true,
+        "per_request": [
+          {
+            "name": "vision",
+            "passed": true,
+            "seconds": 13.5,
+            "prompt_tokens": 139,
+            "output_tokens": 42,
+            "reused_tokens": 0,
+            "prompt_ms": 2696.1,
+            "decode_ms": 2798.6,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-A0",
+            "passed": true,
+            "seconds": 5.530999999988126,
+            "prompt_tokens": 231,
+            "output_tokens": 64,
+            "reused_tokens": 0,
+            "prompt_ms": 2058.4,
+            "decode_ms": 3367.1,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-B0",
+            "passed": true,
+            "seconds": 5.530999999988126,
+            "prompt_tokens": 234,
+            "output_tokens": 68,
+            "reused_tokens": 0,
+            "prompt_ms": 2139.2,
+            "decode_ms": 3333.9,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-A1",
+            "passed": true,
+            "seconds": 3.922000000020489,
+            "prompt_tokens": 259,
+            "output_tokens": 49,
+            "reused_tokens": 226,
+            "prompt_ms": 1305.9,
+            "decode_ms": 2570.2,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-B1",
+            "passed": true,
+            "seconds": 3.5780000000086147,
+            "prompt_tokens": 262,
+            "output_tokens": 40,
+            "reused_tokens": 229,
+            "prompt_ms": 1343.9,
+            "decode_ms": 2170.7,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-A2",
+            "passed": true,
+            "seconds": 4.25,
+            "prompt_tokens": 286,
+            "output_tokens": 51,
+            "reused_tokens": 254,
+            "prompt_ms": 1801.9,
+            "decode_ms": 2399.5,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-B2",
+            "passed": true,
+            "seconds": 4.64100000000326,
+            "prompt_tokens": 290,
+            "output_tokens": 53,
+            "reused_tokens": 257,
+            "prompt_ms": 2015.8,
+            "decode_ms": 2580.4,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-A2",
+            "passed": true,
+            "seconds": 2.89000000001397,
+            "prompt_tokens": 286,
+            "output_tokens": 51,
+            "reused_tokens": 281,
+            "prompt_ms": 319.3,
+            "decode_ms": 2495.2,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-B2",
+            "passed": true,
+            "seconds": 2.7969999999913853,
+            "prompt_tokens": 290,
+            "output_tokens": 53,
+            "reused_tokens": 285,
+            "prompt_ms": 326.0,
+            "decode_ms": 2404.5,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-A2-again",
+            "passed": true,
+            "seconds": 2.7190000000118744,
+            "prompt_tokens": 286,
+            "output_tokens": 46,
+            "reused_tokens": 281,
+            "prompt_ms": 360.7,
+            "decode_ms": 2285.7,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-B2-again",
+            "passed": true,
+            "seconds": 2.8440000000118744,
+            "prompt_tokens": 290,
+            "output_tokens": 53,
+            "reused_tokens": 285,
+            "prompt_ms": 315.2,
+            "decode_ms": 2475.7,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "tool-call",
+            "passed": true,
+            "seconds": 11.905999999988126,
+            "prompt_tokens": 334,
+            "output_tokens": 102,
+            "reused_tokens": 0,
+            "prompt_ms": 4339.9,
+            "decode_ms": 7520.9,
+            "finish_reason": "tool_calls"
+          },
+          {
+            "name": "tool-result",
+            "passed": true,
+            "seconds": 4.14000000001397,
+            "prompt_tokens": 390,
+            "output_tokens": 16,
+            "reused_tokens": 329,
+            "prompt_ms": 3235.3,
+            "decode_ms": 841.7,
+            "finish_reason": "stop"
+          }
+        ],
+        "decisions": [
+          {
+            "req": 1,
+            "prompt": 139,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 1,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 2,
+            "prompt": 231,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 3,
+            "prompt": 234,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 4,
+            "prompt": 259,
+            "source": "parked/checkpoint",
+            "resume": 226,
+            "read_from": 226,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 5,
+            "prompt": 262,
+            "source": "parked/checkpoint",
+            "resume": 229,
+            "read_from": 229,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 6,
+            "prompt": 286,
+            "source": "parked/checkpoint",
+            "resume": 254,
+            "read_from": 254,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 7,
+            "prompt": 290,
+            "source": "parked/checkpoint",
+            "resume": 257,
+            "read_from": 257,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 8,
+            "prompt": 286,
+            "source": "parked/checkpoint",
+            "resume": 281,
+            "read_from": 281,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 9,
+            "prompt": 290,
+            "source": "parked/checkpoint",
+            "resume": 285,
+            "read_from": 285,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 10,
+            "prompt": 286,
+            "source": "parked/checkpoint",
+            "resume": 281,
+            "read_from": 281,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 11,
+            "prompt": 290,
+            "source": "parked/checkpoint",
+            "resume": 285,
+            "read_from": 285,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 12,
+            "prompt": 334,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 13,
+            "prompt": 390,
+            "source": "checkpoint",
+            "resume": 329,
+            "read_from": 329,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          }
+        ]
+      },
+      {
+        "case": "control-02",
+        "status": "passed",
+        "request_count": 13,
+        "passed_requests": 13,
+        "env": {
+          "STRATA_PROMPT_CACHE_TRACE": "1",
+          "STRATA_RUNNING_STATE_REUSE": "0",
+          "STRATA_CHECKPOINT_MOVE": "0"
+        },
+        "settings": {
+          "max_context": 65536,
+          "reasoning": "high",
+          "cache_total_mib": 2048,
+          "cache_slots": 2
+        },
+        "projection_config_false": true,
+        "no_native_control_vector_argument": true,
+        "case_seconds": 109.28099999998813,
+        "http_seconds": 62.70299999997951,
+        "http_seconds_excluding_first_vision": 56.264999999984866,
+        "output_tokens": 721,
+        "native_prompt_ms": 22909.5,
+        "native_decode_ms": 38251.49999999999,
+        "phase_counts": {
+          "park": 12,
+          "checkpoint": 9,
+          "restore": 8,
+          "decision": 13
+        },
+        "park_stored": 12,
+        "park_capture_ms": 748.4,
+        "park_save_ms": 748.5,
+        "checkpoint_save_ms": 270.3,
+        "restore_ms": 269.6,
+        "park_retained_bytes_sum": 99214272,
+        "park_additional_bytes_sum": 4526348940,
+        "park_fresh_estimate_bytes_sum": 4545827148,
+        "park_max_retained_bytes": 15036408,
+        "park_min_additional_bytes": 239191168,
+        "park_max_additional_bytes": 472257688,
+        "min_available_ram_gib": 10.849533081054688,
+        "min_native_free_vram_mib": 326,
+        "process_memory_peaks": {
+          "native": {
+            "rss_bytes": 41555251200,
+            "private_bytes": 49208131584,
+            "peak_wset_bytes": 41687932928
+          },
+          "vision": {
+            "rss_bytes": 1175465984,
+            "private_bytes": 1428701184,
+            "peak_wset_bytes": 1215393792
+          }
+        },
+        "same_process_identities": true,
+        "clean_owned_process_cleanup": true,
+        "per_request": [
+          {
+            "name": "vision",
+            "passed": true,
+            "seconds": 6.437999999994645,
+            "prompt_tokens": 139,
+            "output_tokens": 62,
+            "reused_tokens": 0,
+            "prompt_ms": 2753.9,
+            "decode_ms": 2934.0,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-A0",
+            "passed": true,
+            "seconds": 5.26600000000326,
+            "prompt_tokens": 231,
+            "output_tokens": 65,
+            "reused_tokens": 0,
+            "prompt_ms": 2164.8,
+            "decode_ms": 2993.9,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-B0",
+            "passed": true,
+            "seconds": 5.452999999979511,
+            "prompt_tokens": 234,
+            "output_tokens": 63,
+            "reused_tokens": 0,
+            "prompt_ms": 2244.8,
+            "decode_ms": 3158.2,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-A1",
+            "passed": true,
+            "seconds": 4.328000000008615,
+            "prompt_tokens": 259,
+            "output_tokens": 57,
+            "reused_tokens": 226,
+            "prompt_ms": 1361.3,
+            "decode_ms": 2899.6,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-B1",
+            "passed": true,
+            "seconds": 3.577999999979511,
+            "prompt_tokens": 262,
+            "output_tokens": 40,
+            "reused_tokens": 229,
+            "prompt_ms": 1392.3,
+            "decode_ms": 2117.0,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-A2",
+            "passed": true,
+            "seconds": 4.60899999999674,
+            "prompt_tokens": 286,
+            "output_tokens": 51,
+            "reused_tokens": 254,
+            "prompt_ms": 1876.9,
+            "decode_ms": 2668.6,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "branch-B2",
+            "passed": true,
+            "seconds": 4.60899999999674,
+            "prompt_tokens": 290,
+            "output_tokens": 51,
+            "reused_tokens": 257,
+            "prompt_ms": 1997.8,
+            "decode_ms": 2563.6,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-A2",
+            "passed": true,
+            "seconds": 2.875,
+            "prompt_tokens": 286,
+            "output_tokens": 47,
+            "reused_tokens": 281,
+            "prompt_ms": 380.0,
+            "decode_ms": 2440.6,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-B2",
+            "passed": true,
+            "seconds": 2.9539999999979045,
+            "prompt_tokens": 290,
+            "output_tokens": 51,
+            "reused_tokens": 285,
+            "prompt_ms": 390.3,
+            "decode_ms": 2488.1,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-A2-again",
+            "passed": true,
+            "seconds": 3.109000000025844,
+            "prompt_tokens": 286,
+            "output_tokens": 51,
+            "reused_tokens": 281,
+            "prompt_ms": 401.9,
+            "decode_ms": 2648.1,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "repeat-B2-again",
+            "passed": true,
+            "seconds": 3.125,
+            "prompt_tokens": 290,
+            "output_tokens": 54,
+            "reused_tokens": 285,
+            "prompt_ms": 383.0,
+            "decode_ms": 2686.8,
+            "finish_reason": "stop"
+          },
+          {
+            "name": "tool-call",
+            "passed": true,
+            "seconds": 11.85899999999674,
+            "prompt_tokens": 334,
+            "output_tokens": 108,
+            "reused_tokens": 0,
+            "prompt_ms": 4475.3,
+            "decode_ms": 7313.9,
+            "finish_reason": "tool_calls"
+          },
+          {
+            "name": "tool-result",
+            "passed": true,
+            "seconds": 4.5,
+            "prompt_tokens": 390,
+            "output_tokens": 21,
+            "reused_tokens": 329,
+            "prompt_ms": 3087.2,
+            "decode_ms": 1339.1,
+            "finish_reason": "stop"
+          }
+        ],
+        "decisions": [
+          {
+            "req": 1,
+            "prompt": 139,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 1,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 2,
+            "prompt": 231,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 3,
+            "prompt": 234,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 4,
+            "prompt": 259,
+            "source": "parked/checkpoint",
+            "resume": 226,
+            "read_from": 226,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 5,
+            "prompt": 262,
+            "source": "parked/checkpoint",
+            "resume": 229,
+            "read_from": 229,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 6,
+            "prompt": 286,
+            "source": "parked/checkpoint",
+            "resume": 254,
+            "read_from": 254,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 7,
+            "prompt": 290,
+            "source": "parked/checkpoint",
+            "resume": 257,
+            "read_from": 257,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 8,
+            "prompt": 286,
+            "source": "parked/checkpoint",
+            "resume": 281,
+            "read_from": 281,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 9,
+            "prompt": 290,
+            "source": "parked/checkpoint",
+            "resume": 285,
+            "read_from": 285,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 10,
+            "prompt": 286,
+            "source": "parked/checkpoint",
+            "resume": 281,
+            "read_from": 281,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 11,
+            "prompt": 290,
+            "source": "parked/checkpoint",
+            "resume": 285,
+            "read_from": 285,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 12,
+            "prompt": 334,
+            "source": "none",
+            "resume": 0,
+            "read_from": 0,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          },
+          {
+            "req": 13,
+            "prompt": 390,
+            "source": "checkpoint",
+            "resume": 329,
+            "read_from": 329,
+            "images": 0,
+            "pin": 0,
+            "ckpt": 1
+          }
+        ]
+      }
+    ]
+  }
+}
