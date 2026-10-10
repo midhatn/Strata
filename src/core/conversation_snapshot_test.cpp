@@ -163,6 +163,25 @@ void full_session(int fmt, int mode, int experts) {
               moved.bytes()==b.bytes(),"checkpoint handoff moves buffers and preserves snapshot accounting");
         check(conversation_snapshot_restore(moved,ss,g,draft.state,err)==ConversationRestore::restored,
               "snapshot with moved checkpoint chain restores exactly");
+        // A refused cache insertion must leave the rvalue available to the park caller's rollback.
+        ConversationCache too_small(1,1);
+        check(!too_small.put(std::move(moved)),"cache admission refuses an oversized moved snapshot");
+        transferable=std::move(moved.checkpoints);
+        check(transferable.size()==1 && transferable[0].gdn.data()==original &&
+              transferable[0].gdn==b.checkpoints[0].gdn && transferable[0].used==17,
+              "refused insertion permits exact checkpoint-chain ownership rollback");
+        check(conversation_checkpoint_restore(transferable[0],ss,g,err),
+              "rolled-back checkpoint remains valid for native restore");
+        std::vector<int32_t> empty_ids;
+        const ConversationView invalid{empty_ids,images,transferable,true};
+        SavedConversation untouched=b;
+        check(!conversation_snapshot_save(untouched,invalid,ss,g,draft.state,err,{},nullptr,false),
+              "invalid move capture fails before consuming the caller's checkpoints");
+        check(transferable[0].gdn.data()==original && transferable[0].gdn==b.checkpoints[0].gdn &&
+              untouched.live.gdn==b.live.gdn && equal(untouched.kv[0],b.kv[0]),
+              "failed move capture preserves both the active chain and published snapshot");
+        check(conversation_snapshot_restore(b,ss,g,draft.state,err)==ConversationRestore::restored,
+              "restore B after move-failure fixtures");
     }
     {
         // disk save path: metadata + streamed K/V give the same file as the captured image
@@ -212,10 +231,18 @@ void full_session(int fmt, int mode, int experts) {
         reuse.running.gdn=a.live.gdn; reuse.running.ple=a.live.ple; reuse.running.tails=a.live.tails;
         reuse.running.dead=a.live.dead; reuse.running.block_pos=a.live.block_pos;
         const uint8_t* original_gdn = reuse.running.gdn.data();
+        const uint8_t* original_ple = reuse.running.ple.data();
+        const uint8_t* original_tails = reuse.running.tails.data();
+        const uint8_t* original_dead = reuse.running.dead.data();
+        const uint8_t* original_block_pos = reuse.running.block_pos.data();
         const uint8_t* original = nullptr;
         reuse.kv[0].k.visit(0,1,[&](const uint8_t* p,size_t,size_t){original=p;return true;});
         main.fill_after(91,dirty); draft.fill_after(91,std::max<int64_t>(0,dirty-1));
         cuda_check(cudaMemset(ss.gdn_state,91,sizes.gdn));
+        cuda_check(cudaMemset(ss.ple_hist,92,sizes.ple));
+        cuda_check(cudaMemset(main.state.idx_tail,93,sizes.tail));
+        cuda_check(cudaMemset(main.state.idx_dead,94,sizes.dead));
+        cuda_check(cudaMemset(main.state.idx_block_pos,95,sizes.block_pos));
         ids.resize(70);
         for (size_t i=65;i<ids.size();++i) ids[i]=int32_t(i+1);
         cuda_check(cudaMemcpy(main.state.idx_pooled+(ids.size()/4)*g.idx_key_dim,
@@ -227,9 +254,13 @@ void full_session(int fmt, int mode, int experts) {
         check(conversation_snapshot_save(incremental,view,ss,g,draft.state,err,std::move(reuse),&reused),"capture with retained pages");
         check(incremental.bytes() <= peak,"incremental allocation stays within admitted bound");
         check(incremental.live.gdn==fresh.live.gdn && incremental.live.ple==fresh.live.ple &&
-              incremental.live.dead==fresh.live.dead && equal(incremental.kv[0],fresh.kv[0]) &&
+              incremental.live.tails==fresh.live.tails && incremental.live.dead==fresh.live.dead &&
+              incremental.live.block_pos==fresh.live.block_pos && equal(incremental.kv[0],fresh.kv[0]) &&
                equal(incremental.kv[1],fresh.kv[1]),"incremental capture equals full capture after growth or rewind");
         check(incremental.live.gdn.data()==original_gdn,"incremental capture reuses the running-state allocation");
+        check(incremental.live.ple.data()==original_ple && incremental.live.tails.data()==original_tails &&
+              incremental.live.dead.data()==original_dead && incremental.live.block_pos.data()==original_block_pos,
+              "incremental capture reuses and overwrites every running-state allocation");
         check((dirty>=4)==(reused>0),"only complete unchanged pages or rows are retained");
         incremental.kv[0].k.visit(0,1,[&](const uint8_t* p,size_t,size_t){
             check(p==original,"growth never reallocates the retained payload");return true;

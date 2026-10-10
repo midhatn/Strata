@@ -23,6 +23,51 @@ SavedConversation image(std::initializer_list<int32_t> ids, bool cvec = true) {
 
 int main() {
     {
+        std::vector<ConversationCheckpoint> chain(1);
+        chain.reserve(8);
+        auto& c = chain[0];
+        c.ids = {1, 2}; c.ids.reserve(31);
+        c.imgs.reserve(7);
+        c.gdn.resize(9, 42); c.gdn.reserve(257);
+        c.ple.resize(3, 8); c.ple.reserve(63);
+        c.stage_parts.reserve(2); // empty, but its directory still belongs to the moved image
+        const size_t copied = sizeof(ConversationCheckpoint) + 2 * sizeof(int32_t) + 9 + 3;
+        const size_t owned = chain.capacity() * sizeof(ConversationCheckpoint) + c.bytes();
+        const size_t fresh_live_and_kv = 97;
+        size_t estimate = copied + fresh_live_and_kv, already_owned = 0;
+        const size_t old_physical_admission = estimate > owned ? estimate - owned : 0;
+        const auto* state = c.gdn.data();
+        check(conversation_checkpoint_move_budget(chain, estimate, already_owned),
+              "moving a checkpoint chain admits directory and payload spare capacity");
+        check(estimate == owned + fresh_live_and_kv && already_owned == owned,
+              "moved snapshot budget counts full capacity and physical gate credits only that ownership");
+        check(estimate - already_owned == fresh_live_and_kv,
+              "spare checkpoint capacity cannot reduce admission below new allocation bytes");
+        check(old_physical_admission < fresh_live_and_kv && estimate - already_owned == fresh_live_and_kv,
+              "regression fixture exposes original spare-capacity under-admission and the corrected fresh bytes");
+        check(chain[0].gdn.data() == state && chain[0].gdn[0] == 42,
+              "estimating a move never consumes or mutates the active chain");
+        size_t invalid = copied - 1, sentinel = 123;
+        check(!conversation_checkpoint_move_budget(chain, invalid, sentinel) &&
+              invalid == copied - 1 && sentinel == 123,
+              "an estimate smaller than its checkpoint contribution is rejected without output mutation");
+        invalid = SIZE_MAX;
+        check(!conversation_checkpoint_move_budget(chain, invalid, sentinel) && invalid == SIZE_MAX && sentinel == 123,
+              "adding moved spare capacity rejects size overflow before admission");
+        c.stage_parts.emplace_back();
+        invalid = copied + fresh_live_and_kv;
+        check(!conversation_checkpoint_move_budget(chain, invalid, sentinel) && sentinel == 123,
+              "single-session chain move rejects a layer-split checkpoint");
+    }
+    {
+        std::vector<ConversationCheckpoint> empty;
+        empty.reserve(4);
+        size_t estimate = 97, owned = 0;
+        check(conversation_checkpoint_move_budget(empty, estimate, owned) &&
+              owned == empty.capacity() * sizeof(ConversationCheckpoint) && estimate - owned == 97,
+              "an empty but reserved chain still charges its moved directory");
+    }
+    {
         ConversationBuffer bytes;
         const size_t first = ConversationBuffer::segment_bytes + 17;
         const size_t peak = bytes.allocation_peak(first);

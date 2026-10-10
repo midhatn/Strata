@@ -9,6 +9,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <deque>
+#include <limits>
 #include <utility>
 #include <vector>
 
@@ -41,6 +42,38 @@ struct ConversationCheckpoint {
         return n;
     }
 };
+
+// A fresh snapshot estimate counts the checkpoint chain as copied sizes. Moving
+// the chain retains its actual allocation capacities instead. Charge that whole
+// capacity to the cache, but subtract only owned storage from physical admission.
+// On failure neither output changes; whole-session capture rejects stage parts.
+inline bool conversation_checkpoint_move_budget(const std::vector<ConversationCheckpoint>& checks,
+                                                size_t& estimate, size_t& already_owned) {
+    size_t logical = 0, allocated = 0;
+    const size_t limit = std::numeric_limits<size_t>::max();
+    auto vector_bytes = [&](size_t size, size_t capacity, size_t width) {
+        if (capacity < size || size > limit / width || capacity > limit / width) return false;
+        const size_t payload = size * width, storage = capacity * width;
+        if (payload > limit - logical || storage > limit - allocated) return false;
+        logical += payload;
+        allocated += storage;
+        return true;
+    };
+    if (!vector_bytes(checks.size(), checks.capacity(), sizeof(ConversationCheckpoint))) return false;
+    for (const auto& c : checks) {
+        if (!c.stage_parts.empty() ||
+            !vector_bytes(c.ids.size(), c.ids.capacity(), sizeof(int32_t)) ||
+            !vector_bytes(c.imgs.size(), c.imgs.capacity(), sizeof(ConversationImageKey)) ||
+            !vector_bytes(c.stage_parts.size(), c.stage_parts.capacity(), sizeof(ConversationCheckpoint)))
+            return false;
+        for (const auto* bytes : {&c.gdn, &c.ple, &c.tails, &c.dead, &c.block_pos})
+            if (!vector_bytes(bytes->size(), bytes->capacity(), 1)) return false;
+    }
+    if (logical > estimate || allocated > limit - (estimate - logical)) return false;
+    estimate = estimate - logical + allocated;
+    already_owned = allocated;
+    return true;
+}
 
 // Identity-layout K/V pages and completed indexer rows. For streamed layers the
 // source is the authoritative host pool, NOT the replaceable VRAM slots.

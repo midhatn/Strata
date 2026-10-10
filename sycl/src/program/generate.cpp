@@ -7504,6 +7504,11 @@ int main(int argc, char **argv) try {
             }
             const size_t fresh_estimate = main_fresh_estimate + stage_fresh_estimate;
             estimate += stage_estimate;
+            size_t existing_checks = 0;
+            if (move_checks && !strata::core::conversation_checkpoint_move_budget(checks, estimate, existing_checks)) {
+                std::fprintf(stderr, "strata serve: conversation cache: skip parking (checkpoint move estimate overflow or invalid chain)\n");
+                return true;
+            }
             // A park carrying its own retained K/V replaces memory the cache
             // already held, so capacity is make_room's call - it runs next either
             // way, and put()'s accounting still bounds the budget. The with-reuse
@@ -7524,11 +7529,6 @@ int main(int argc, char **argv) try {
             try {
                 const uint64_t floor = (uint64_t) o.conversation_cache_min_free_mib * 1024 * 1024;
                 const size_t retained = reuse.bytes() + stage_retained;
-                size_t existing_checks = 0;
-                if (move_checks) {
-                    existing_checks = checks.capacity() * sizeof(ConvCheckpoint);
-                    for (const auto& ck : checks) existing_checks += ck.bytes();
-                }
                 const size_t additional = estimate > retained ? estimate - retained : 0;
                 const size_t new_bytes = additional > existing_checks ? additional - existing_checks : 0;
                 if (!strata::core::conversation_memory_admit(strata::core::available_host_bytes(),
